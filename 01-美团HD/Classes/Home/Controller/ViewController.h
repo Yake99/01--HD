@@ -7,8 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-
-@interface ViewController : UIViewController
+#import "DPRequest.h"
+@interface ViewController : UIViewController<DPRequestDelegate>
 
 
 @end

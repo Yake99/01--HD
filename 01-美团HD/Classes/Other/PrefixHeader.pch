@@ -1,0 +1,21 @@
+//
+//  PrefixHeader.pch
+//  01-美团HD
+//
+//  Created by yake on 15-2-26.
+//  Copyright (c) 2015年 yake. All rights reserved.
+//
+
+#ifndef _1___HD_PrefixHeader_pch
+#define _1___HD_PrefixHeader_pch
+
+#ifdef DEBUG
+#define YKLog(...) NSLog (__VA_ARGS__)
+#else
+#define YKLog(...)
+#endif
+
+#define YKColor(r,g,b) [UIColor ColorWithRed:(r)/255.0 green:(g)/255.0 blue:(b)/255.0 alpha:1.0];
+#define YKGlobalBg YKColor(230,230,230)
+#define YKNoteCenter [NSNotificationCenter defaultCenter]
+#endif
