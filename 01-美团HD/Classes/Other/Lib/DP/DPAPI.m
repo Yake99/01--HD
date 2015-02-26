@@ -38,14 +38,8 @@ typedef void (^DPBlock) (id result, NSError * error);
     
     //2.存储这次请求对应的block
     //每一个request对象的description是唯一的，并且是个字符串，遵守NSCOpying协议，可以作为key
-    NSString * key = request.description;
-    self.blocks[key] = ^(id result, NSError * error){
-        if(result && success){
-            success(result);
-        }else if (error && failure){
-            failure(error);
-        }
-    };
+    request.success = success;
+    request.failure = failure;
     
     //返回请求对象
     return request;
@@ -58,8 +52,9 @@ typedef void (^DPBlock) (id result, NSError * error);
  *  @param error   错误信息
 */
 - (void)request:(DPRequest *)request didFailWithError:(NSError *)error {
-    DPBlock block = self.blocks[request.description];
-    block(nil, error);
+    if(request.failure){
+        request.failure(error);
+    }
 }
 /**
  *  请求成功
@@ -68,8 +63,9 @@ typedef void (^DPBlock) (id result, NSError * error);
  *  @param error   请求结果
  */
 - (void)request:(DPRequest *)request didFinishLoadingWithResult:(id)result {
-    DPBlock block = self.blocks[request.description];
-    block(result,nil);
+    if(request.success){
+        request.success(result);
+    }
 }
 #pragma mark - 单例模式
 YKSingleton_M

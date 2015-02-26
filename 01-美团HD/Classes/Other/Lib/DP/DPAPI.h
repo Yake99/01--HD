@@ -10,8 +10,7 @@
 #import <UIKit/UIKit.h>
 #import "DPRequest.h"
 #import "YKSingleton.h"
-typedef void (^DPSuccess)(id json);
-typedef void (^DPFailure)(NSError * error);
+
 
 @interface DPAPI : NSObject
 

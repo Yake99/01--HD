@@ -20,17 +20,19 @@
     
     NSMutableDictionary * paramGz = [NSMutableDictionary dictionary];
     paramGz[@"city"] = @"广州";
+    paramGz[@"limit"] = @"3";
     // 单例不会被释放么？
     [[DPAPI sharedInstance] request:@"v1/business/find_businesses" params:paramGz success:^(id json) {
-        YKLog(@"广州请求成功");
+        YKLog(@"--广州请求成功--%@",json);
     } failure:^(NSError *error) {
         YKLog(@"广州请求失败");
     }];
     
     NSMutableDictionary * paramBj = [NSMutableDictionary dictionary];
     paramBj[@"city"] = @"北京";
+    paramBj[@"limit"] = @"3";
     [[DPAPI sharedInstance] request:@"v1/business/find_businesses" params:paramBj success:^(id json) {
-        YKLog(@"北京请求成功");
+        YKLog(@"--北京请求成功--%@",json);
     } failure:^(NSError *error) {
         YKLog(@"北京请求失败");
     }];
