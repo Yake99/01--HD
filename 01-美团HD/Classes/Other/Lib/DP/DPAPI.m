@@ -10,36 +10,47 @@
 #import "DPConstants.h"
 
 
-typedef void (^DPBlock) (id result, NSError * error);
+
 @interface DPAPI ()<DPRequestDelegate>
 {
     NSMutableSet * _requests;
 }
-//存放所有 block;
-@property (nonatomic,strong)NSMutableDictionary * blocks;
+//存放所有success block;
+@property (nonatomic,strong)NSMutableDictionary * successes;
+//存放所有failure block;
+@property (nonatomic,strong)NSMutableDictionary * failures;
 @end
 
 @implementation DPAPI
 #pragma mark - 懒加载
-- (NSMutableDictionary *)blocks
+- (NSMutableDictionary *)successes
 {
-    if(!_blocks){
-        _blocks = [[NSMutableDictionary alloc] init];
+    if(!_successes){
+        _successes = [[NSMutableDictionary alloc] init];
     }
-    return _blocks;
+    return _successes;
 }
 
+- (NSMutableDictionary *)failures
+{
+    if(!_failures){
+        _failures = [[NSMutableDictionary alloc] init];
+    }
+    return _failures;
+}
 #pragma mark - 后来添加的代码
 - (DPRequest *)request:(NSString *)url params:(NSDictionary *)params success:(DPSuccess)success failure:(DPFailure)failure
 {
     //1.发送请求
     NSMutableDictionary * mutableParams = [NSMutableDictionary dictionaryWithDictionary:params];
-    DPRequest * request = [self requestWithURL:url params:mutableParams delegate:self];
+   DPRequest * request = [self requestWithURL:url params:mutableParams delegate:self];
     
     //2.存储这次请求对应的block
+    self.successes[request.description] = success;
+    self.failures[request.description] = failure;
+    
     //每一个request对象的description是唯一的，并且是个字符串，遵守NSCOpying协议，可以作为key
-    request.success = success;
-    request.failure = failure;
+  //  NSLog(@"request.description = %@",request.description);
     
     //返回请求对象
     return request;
@@ -52,8 +63,9 @@ typedef void (^DPBlock) (id result, NSError * error);
  *  @param error   错误信息
 */
 - (void)request:(DPRequest *)request didFailWithError:(NSError *)error {
-    if(request.failure){
-        request.failure(error);
+    DPFailure failure = self.failures[request.description];
+    if(failure){
+        failure(error);
     }
 }
 /**
@@ -63,11 +75,32 @@ typedef void (^DPBlock) (id result, NSError * error);
  *  @param error   请求结果
  */
 - (void)request:(DPRequest *)request didFinishLoadingWithResult:(id)result {
-    if(request.success){
-        request.success(result);
+    DPSuccess success = self.successes[request.description];
+    //如果block为空，会崩溃
+    if(success){
+        success(result);
     }
+    
 }
 #pragma mark - 单例模式
+//static id _instance;
+//+ (instancetype)allocWithZone:(struct _NSZone *)zone
+//{
+//    static dispatch_once_t onceToken;
+//    dispatch_once(&onceToken, ^{
+//        _instance = [super allocWithZone:zone];
+//    });
+//    return _instance;
+//}
+//
+//+ (instancetype)sharedInstance
+//{
+//    static dispatch_once_t onceToken;
+//    dispatch_once(&onceToken, ^{
+//        _instance = [[self alloc] init];
+//    });
+//    return _instance;
+//}
 YKSingleton_M
 #pragma mark - 原来的代码
 - (id)init {
