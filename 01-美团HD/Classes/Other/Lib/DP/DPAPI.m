@@ -76,7 +76,7 @@
  */
 - (void)request:(DPRequest *)request didFinishLoadingWithResult:(id)result {
     DPSuccess success = self.successes[request.description];
-    //如果block为空，会崩溃
+    //外面传进的block为空时，会崩溃
     if(success){
         success(result);
     }
@@ -84,6 +84,7 @@
 }
 #pragma mark - 单例模式
 //static id _instance;
+////保证alloc方法只执行一次
 //+ (instancetype)allocWithZone:(struct _NSZone *)zone
 //{
 //    static dispatch_once_t onceToken;
@@ -100,6 +101,11 @@
 //        _instance = [[self alloc] init];
 //    });
 //    return _instance;
+//}
+//上述方法也可写成如下形式，但是上述写法能保证init方法也只执行一次。
+//+ (instancetype)sharedInstance
+//{
+//    return [[self alloc] init];
 //}
 YKSingleton_M
 #pragma mark - 原来的代码
