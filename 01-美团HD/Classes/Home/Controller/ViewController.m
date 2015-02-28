@@ -20,7 +20,7 @@
     
     NSMutableDictionary * paramGz = [NSMutableDictionary dictionary];
     paramGz[@"city"] = @"广州";
-    // 单例不会被释放么？
+    // 单例不会被释放么
     [[DPAPI sharedInstance] request:@"v1/business/find_businesses" params:paramGz success:^(id json) {
         YKLog(@"广州请求成功");
     } failure:^(NSError *error) {
